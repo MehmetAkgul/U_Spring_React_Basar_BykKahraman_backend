@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = {UniqueUserNameValidator.class})
 public @interface UniqueUserName {
 
-    String message() default "Username must be unique";
+    String message() default "{hoaxify.constraint.Username.UniqueUsername.message}";
 
     Class<?>[] groups() default {};
 

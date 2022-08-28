@@ -19,7 +19,7 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @NotNull
+    @NotNull(message = "{hoaxify.constraint.username.NotNull.message}")
     @Size(min = 4,max = 255)
     @UniqueUserName
     private String username;
@@ -30,7 +30,7 @@ public class User {
 
     @NotNull
     @Size(min = 8,max = 255)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$",message = "{hoaxify.constraint.Pattern.NotNull.message}")
     private String password;
 
 
