@@ -1,6 +1,8 @@
 package com.hoaxify.backend.auth;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.hoaxify.backend.error.ApiError;
+import com.hoaxify.backend.shared.Views;
 import com.hoaxify.backend.user.User;
 import com.hoaxify.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ public class AuthController {
 
 
     @PostMapping("/api/1.0/auth")
+    @JsonView(Views.Base.class)
     ResponseEntity<?> handleAuthentication(@RequestHeader(name = "Authorization", required = false) String authorization) {
 
         if (authorization == null) {
@@ -51,7 +54,13 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
 
+//        Map<String, String> responseBody = new HashMap<>();
+//        responseBody.put("username", inDb.getUsername());
+//        responseBody.put("displayName", inDb.getDisplayName());
+//        responseBody.put("image", inDb.getImage());
+//        return ResponseEntity.ok().body(responseBody);
 
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok().body(inDb);
     }
 }
