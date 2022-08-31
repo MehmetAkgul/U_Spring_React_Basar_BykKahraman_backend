@@ -1,33 +1,46 @@
 package com.hoaxify.backend.error;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 @RestController
 public class ErrorHandler implements ErrorController {
 
-
     @Autowired
     private ErrorAttributes errorAttributes;
 
     @RequestMapping("/error")
     public ApiError handleError(WebRequest webRequest) {
-        Map<String, Object> attributes = errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.defaults());
+        Map<String, Object> attributes = errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.of(ErrorAttributeOptions.Include.MESSAGE, ErrorAttributeOptions.Include.BINDING_ERRORS, ErrorAttributeOptions.Include.EXCEPTION, ErrorAttributeOptions.Include.STACK_TRACE));
+
         String message = (String) attributes.get("message");
         String path = (String) attributes.get("path");
         int status = (Integer) attributes.get("status");
-        return new ApiError(status, message, path);
+
+        ApiError error = new ApiError(status, message, path);
+        if (attributes.containsKey("errors")) {
+            @SuppressWarnings("unchecked")
+            List<FieldError> fieldErrors = (List<FieldError>) attributes.get("errors");
+            Map<String, String> validationErrors = new HashMap<>();
+            for (FieldError fieldError : fieldErrors) {
+                validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
+            }
+            error.setValidationErrors(validationErrors);
+        }
+        return error;
     }
+
 }
 

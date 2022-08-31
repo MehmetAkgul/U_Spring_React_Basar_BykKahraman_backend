@@ -1,5 +1,5 @@
-server:
-  port: 8081
+#server:
+#  port: 8084
 
 #spring:
 #  datasource:
@@ -22,6 +22,5 @@ spring:
             mode: none
 
 
-logging:
-  level:
-    org.springframework: DEBUG
+
+
